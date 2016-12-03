@@ -36,11 +36,13 @@ public class ReadFile {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
             while ((fileLine = br.readLine()) != null) {
             	//System.out.println(line);
-                Set<String> fileItems = new HashSet<String>(Arrays.asList(fileLine.split(",")));
+            	List<String> tempList = Arrays.asList(fileLine.split(","));
+            	Set<String> fileItems = new HashSet<String>();
+            	for(String elem:tempList) {
+            		itemSet.add(Collections.singleton(elem.trim()));
+            		fileItems.add(elem.trim());
+            	}
                 transactions.add(fileItems);
-                for(String s : fileItems){
-                	itemSet.add(Collections.singleton(s.trim()));
-                }
             }
             br.close();
         } catch (IOException e) {
