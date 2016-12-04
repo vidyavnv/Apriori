@@ -10,6 +10,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * COMS E6111 - Project 3
+ * ReadFile.java
+ * Purpose: Reads a file and converts each line into a set and adds individual items
+ *			to create 1-length itemset.
+ *
+ * @author Sriharsha Gundappa, Vidya Venkiteswaran 
+ * @version 1.0 12/03/2016
+ */
 public class ReadFile {
 	private List<Set<String>> transactions;
     private Set<Set<String>> itemSet;
@@ -28,6 +37,7 @@ public class ReadFile {
     }
     
     public static ReadFile readFile(String fileName){
+    	// Read input file and collect items into an itemset
 		List<Set<String>> transactions = new ArrayList<Set<String>>();
 		Set<Set<String>> itemSet = new HashSet<Set<String>>();;
 		
@@ -35,8 +45,9 @@ public class ReadFile {
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
             while ((fileLine = br.readLine()) != null) {
-            	//System.out.println(line);
+            	// Split file lines with , delimiter
             	List<String> tempList = Arrays.asList(fileLine.split(","));
+            	// Create a set to store each individual itemset as a set
             	Set<String> fileItems = new HashSet<String>();
             	for(String elem:tempList) {
             		itemSet.add(Collections.singleton(elem.trim()));

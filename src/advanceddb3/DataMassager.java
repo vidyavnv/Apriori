@@ -8,12 +8,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import advanceddb3.vo.ConvertedSalary;
 
+/**
+ * COMS E6111 - Project 3
+ * DataMassager.java
+ * Purpose: Creates a new dataset of the form: agency name, title description, salary range.
+ *			Numeric salary is categorised into <25k,<25kand>50k,<50kand>75k,<75kand>100k,
+ *			<100kand>125k,>125k.
+ * @author Sriharsha Gundappa, Vidya Venkiteswaran 
+ * @version 1.0 12/03/2016
+ */
 public class DataMassager {
 
 	public static void main(String[] args) {
 		BufferedReader br = null;
-	//	ArrayList<ConvertedSalary> records = new ArrayList<>();
-
+		
 		try {
 
 			String sCurrentLine;
@@ -33,20 +41,21 @@ public class DataMassager {
 			BufferedWriter bw = new BufferedWriter(fw);
 			
 			int i = 0;
+			// Read each line in csv file
 			while ((sCurrentLine = br.readLine()) != null) {
 				System.out.println(i);
 				
 				if(i != 0 && !sCurrentLine.contains("\"")) {
+					// Split each using ',' delimiter
 					String [] arr = sCurrentLine.split(",");
-				/*	OriginalRecord record = new OriginalRecord(arr[0], arr[1], arr[2], arr[3],
-							arr[4], arr[5], arr[6], arr[7], arr[8], arr[9], arr[10], arr[11],
-							arr[12], arr[13], arr[14], arr[15], arr[16]);*/
 					
+					// Pick following columns Base Salary, Pay Basis and Salary
 					String baseSalary = arr[10];
 					String payBasis = arr[11];
 					
 					long salary = 0;
 					
+					// Convert per day/per month salary to per annum salary
 					if("per day".equalsIgnoreCase(payBasis)) {
 						salary = Long.parseLong(baseSalary.substring(1, baseSalary.length()-3)) * 21*12;
 					}else if("per hour".equalsIgnoreCase(payBasis)) {
@@ -57,13 +66,11 @@ public class DataMassager {
 					
 					ConvertedSalary sal = new ConvertedSalary(arr[2], arr[3], arr[4], 
 							arr[5], arr[8], arr[9], salary);
-					
-			//		records.add(sal);
-					
+										
 					String initPart = sal.agencyName + "," + sal.titleDesc + ",";
 					
+					// Create range category for each salary and write it to file to create a csv
 					if(sal.salary < 25000) {
-			//			bw.write(initPart + "1,0,0,0,0,0");
 						bw.write(initPart + "lessthan25k");
 					}else if(sal.salary >= 25000 && sal.salary < 50000) {
 						bw.write(initPart + "between25kand50k");

@@ -15,24 +15,38 @@ import java.util.Set;
 
 import advanceddb3.vo.ItemSet;
 
+/**
+ * COMS E6111 - Project 3
+ * Apriori.java
+ * Purpose: Run Apriori algorithm to create itemsets and association rules.
+ *
+ * @author Sriharsha Gundappa, Vidya Venkiteswaran 
+ * @version 1.0 12/03/2016
+ */
 public class Apriori {
 	public void runApriori(String fileName, float minSupport, float minConfidence) throws IOException{
+		 // Read file and create individual itemset and collect of each line into itemset 
 		 ReadFile result = ReadFile.readFile(fileName);
+		 // To count occurrence of each itemset
 		 Map<Set<String>, Integer> frequency = new HashMap<Set<String>, Integer>();
 		 Map<Integer, Set<Set<String>>> fullItemSet = new HashMap<Integer, Set<Set<String>>>();
 		 Set<Set<String>> CSet;
+		 // Get itemset which has support greater than equal to minSupport
 		 CSet = getItemsWithMinSup(result.getTransactions(), result.getItemSet(), minSupport, frequency);
 		 Set<Set<String>> LSet = CSet;
 		 fullItemSet.put(1, LSet);
 		 Integer count = 2;
 		 
 		 Map<Set<String>, Float> itemSetCount = new HashMap<Set<String>, Float>();
-		 List<ItemSet> freqItemSets = new ArrayList<>();
+		 List<ItemSet> freqItemSets = new ArrayList<ItemSet>();
 		 
 		 while(!LSet.isEmpty()){
+			 // Call aprioriGen to create set of length count
 			 LSet = aprioriGen(LSet, count);
+			 // Get itemset which has support greater than equal to minSupport
 			 CSet = getItemsWithMinSup(result.getTransactions(), LSet, minSupport, frequency);
 			 LSet = CSet;
+			 // Add it to a dictionary with key as length of set size and value as itemset
 			 fullItemSet.put(count, LSet);
 			 count += 1;
 		 }
@@ -47,7 +61,7 @@ public class Apriori {
          FileWriter fw = new FileWriter(file.getAbsoluteFile());
          BufferedWriter bw = new BufferedWriter(fw);
 		 
-	//	 System.out.println("==Frequent itemsets (min_sup=" + minSupport*100 + "%)\n");
+         // Calculate support for discovered itemsets
 		 bw.write("==Frequent itemsets (min_sup=" + minSupport*100 + "%)\n");
 		 for ( Set<Set<String>> items : fullItemSet.values() ) {
 				for (Set<String> item : items){
@@ -61,6 +75,7 @@ public class Apriori {
 			 freqItemSets.add(new ItemSet(key,itemSetCount.get(key)));
 		}
 		 
+		 // Sort itemsets in decreasing order of support
 		 Collections.sort(freqItemSets, new Comparator<ItemSet>() {
 
 			@Override
@@ -75,30 +90,28 @@ public class Apriori {
 			 
 		 });
 		 
+		 // Write frequent itemsets to a file with their support values
 		 for(ItemSet item: freqItemSets) {
-		//	 System.out.println(item.itemSet1 + ", " + item.support*100 + "%");
 			 bw.write(item.itemSet1 + ", " + item.support*100 + "%\n");
 		 }
 		 
-	//	 System.out.println("\n\n");
-	//	 System.out.println("==High-confidence association rules (min_conf=" + minConfidence*100 + "%)\n");
 		 bw.write("\n\n");
 		 bw.write("==High-confidence association rules (min_conf=" + minConfidence*100 + "%)\n");
-		 List<ItemSet> highConfidence = new ArrayList<>();
-		 // Create Rules
+		 List<ItemSet> highConfidence = new ArrayList<ItemSet>();
+		 // Create association rules and ad it to the final rule only if it passes the minConfidence value
 		 for(int i=2;fullItemSet.get(i) != null;i++) {
 			 Set<Set<String>> items = fullItemSet.get(i);
 			 for (Set<String> item : items){
 				 
-				 List<String> ordered = new ArrayList<>(item);
-				 
+				 List<String> ordered = new ArrayList<String>(item);
+				 // Break itsemsets into individual items and create rule
 				 for(int j=0;j<ordered.size();j++) {
-					 Set<String> currentItemSet = new HashSet<>();
-					 Set<String> combinedSet = new HashSet<>();
+					 Set<String> currentItemSet = new HashSet<String>();
+					 Set<String> combinedSet = new HashSet<String>();
 					 currentItemSet.add(ordered.get(j));
 					 combinedSet.add(ordered.get(j));
 					 
-					 Set<String> otherItemSet = new HashSet<>();
+					 Set<String> otherItemSet = new HashSet<String>();
 					 
 					 for(int k=0;k<ordered.size();k++) {
 						 if(k != j) {
@@ -110,6 +123,7 @@ public class Apriori {
 					 float overallSize = result.getTransactions().size();
 					 float support = frequency.get(combinedSet)/overallSize;
 					 
+					 // Calculate confidence of the association rule
 					 float secondConfidence = ((float)frequency.get(combinedSet))/((float)frequency.get(otherItemSet));
 					 
 					 if(secondConfidence >= minConfidence) {
@@ -119,6 +133,7 @@ public class Apriori {
 			}
 		 }
 		 
+		 // Sort association rules according to decreasing confidence value
 		 Collections.sort(highConfidence, new Comparator<ItemSet>() {
 
 				@Override
@@ -133,8 +148,9 @@ public class Apriori {
 				 
 			 });
 			 
+		 	 // Write association rules to the same file with their support and confidence values
 			 for(ItemSet item: highConfidence) {
-			//	 System.out.println(item.itemSet1 + " => " + item.itemSet2 + " (Conf: " + item.confidence*100 + "%, Supp: " + item.support*100 + "%)");
+				 System.out.println(item.itemSet1 + " => " + item.itemSet2 + " (Conf: " + item.confidence*100 + "%, Supp: " + item.support*100 + "%)");
 				 bw.write(item.itemSet1 + " => " + item.itemSet2 + " (Conf: " + item.confidence*100 + "%, Supp: " + item.support*100 + "%)\n");
 			 }
 		 
@@ -142,12 +158,14 @@ public class Apriori {
 	}
 	
 	private Set<Set<String>> aprioriGen(Set<Set<String>> lSet, Integer setSize){
+		// Creates a super set of size setSize from lSet itself
 		Set<Set<String>> unionSet = new HashSet<Set<String>>();
 		for (Set<String> itemSet1: lSet){
 			for (Set<String> itemSet2: lSet){
 				Set<String> temp = new HashSet<String>();
 				temp.addAll(itemSet1);
 				temp.addAll(itemSet2);
+				// Add to final set if temporary set size is equal to given setSize
 				if(temp.size() == setSize){
 					unionSet.add(temp);
 				}
@@ -159,6 +177,7 @@ public class Apriori {
 		Set<Set<String>> finalItemSet = new HashSet<Set<String>>();;
 		Map<Set<String>, Integer> itemSetDict = new HashMap<Set<String>, Integer>();
 		
+		// Calculate support for each itemset
 		for (Set<String> item : itemSet) {
 			for (Set<String> transaction : transactions){
 				if(transaction.containsAll(item)){
@@ -173,6 +192,7 @@ public class Apriori {
 			}
 		}
 		
+		// Check which itemset satisfies minSupport
 		for ( Set<String> item : itemSetDict.keySet() ) {
 			float totalSize = transactions.size();
 			float support = itemSetDict.get(item)/totalSize;

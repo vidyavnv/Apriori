@@ -1,5 +1,13 @@
 package advanceddb3.vo;
 
+/**
+ * COMS E6111 - Project 3
+ * ConvertedSalary.java
+ * Purpose: Create class for data read from input csv file.
+ *
+ * @author Sriharsha Gundappa, Vidya Venkiteswaran 
+ * @version 1.0 12/03/2016
+ */
 public class ConvertedSalary {
 	public String agencyName;
 	public String lastName;

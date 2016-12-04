@@ -2,6 +2,14 @@ package advanceddb3.vo;
 
 import java.util.Set;
 
+/**
+ * COMS E6111 - Project 3
+ * ItemSet.java
+ * Purpose: Create class for each itemset with support and confidence.
+ *
+ * @author Sriharsha Gundappa, Vidya Venkiteswaran 
+ * @version 1.0 12/03/2016
+ */
 public class ItemSet {
 	public Set<String> itemSet1;
 	public float support;
