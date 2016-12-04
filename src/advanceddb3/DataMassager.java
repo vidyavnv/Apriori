@@ -55,7 +55,7 @@ public class DataMassager {
 					
 					long salary = 0;
 					
-					// Convert per day/per month salary to per annum salary
+					// Convert per day/per hour salary to per annum salary
 					if("per day".equalsIgnoreCase(payBasis)) {
 						salary = Long.parseLong(baseSalary.substring(1, baseSalary.length()-3)) * 21*12;
 					}else if("per hour".equalsIgnoreCase(payBasis)) {
