@@ -18,13 +18,22 @@ import advanceddb3.vo.ItemSet;
 /**
  * COMS E6111 - Project 3
  * Apriori.java
- * Purpose: Run Apriori algorithm to create itemsets and association rules.
+ * Purpose: Run Apriori algorithm to create itemsets and association rules and write to a file.
  *
  * @author Sriharsha Gundappa, Vidya Venkiteswaran 
  * @version 1.0 12/03/2016
  */
 public class Apriori {
 	public void runApriori(String fileName, float minSupport, float minConfidence) throws IOException{
+		/**
+		 * Runs Apriori algorithm to get frequent itemsets and association rules and write it to a file.
+		 *
+		 * @param  fileName     	name of the file from which items needs to be read
+		 * @param  minSupport  		minimum support value by which itemset support should exceed
+		 * @param  minConfidence  	minimum confidence value by which association rule confidence should exceed
+		 * @throws IOException 		If an input or output exception occurred
+		 * @return no args
+		 */ 
 		 // Read file and create individual itemset and collect of each line into itemset 
 		 ReadFile result = ReadFile.readFile(fileName);
 		 // To count occurrence of each itemset
@@ -158,7 +167,13 @@ public class Apriori {
 	}
 	
 	private Set<Set<String>> aprioriGen(Set<Set<String>> lSet, Integer setSize){
-		// Creates a super set of size setSize from lSet itself
+		/**
+		 * Creates a super set of size setSize from lSet itself.
+		 *
+		 * @param  lSet     Sets of set of type String
+		 * @param  setSize  Size of the set required
+		 * @return unionSet Superset of lSet of size setSize.
+		 */
 		Set<Set<String>> unionSet = new HashSet<Set<String>>();
 		for (Set<String> itemSet1: lSet){
 			for (Set<String> itemSet2: lSet){
@@ -173,7 +188,17 @@ public class Apriori {
 		}
 		return unionSet;
 	}
+	
 	private Set<Set<String>> getItemsWithMinSup(List<Set<String>> transactions, Set<Set<String>> itemSet, float minSupport, Map<Set<String>, Integer> frequency){
+		/**
+		 * Returns itemsets which are equal(or more than) to given minimum support
+		 *
+		 * @param  transactions     Itemset collection from file
+		 * @param  itemSet  		itemSet whose support needs to be calculated
+		 * @param  minSupport  		Real value with which itemSet support should exceed
+		 * @param  frequency  		Universal dictionary of itemsets
+		 * @return finalItemSet 	Itemsets which satisfy minSupport rule
+		 */
 		Set<Set<String>> finalItemSet = new HashSet<Set<String>>();;
 		Map<Set<String>, Integer> itemSetDict = new HashMap<Set<String>, Integer>();
 		

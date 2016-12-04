@@ -37,6 +37,12 @@ public class ReadFile {
     }
     
     public static ReadFile readFile(String fileName){
+    	/**
+		 * Runs Apriori algorithm to get frequent itemsets and association rules and write it to a file.
+		 *
+		 * @param  fileName  						name of the file from which items needs to be read
+		 * @return ReadFile(transactions, itemsets) transactions and 1-itemsets from csv file
+		 */ 
     	// Read input file and collect items into an itemset
 		List<Set<String>> transactions = new ArrayList<Set<String>>();
 		Set<Set<String>> itemSet = new HashSet<Set<String>>();;
